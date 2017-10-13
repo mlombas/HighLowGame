@@ -131,6 +131,16 @@ function Result(high) {
 
     bet = 0;
 
+    updateBalance();
+
+    document.getElementById("gamesPlayed").innerHTML = gamesLose + gamesWon;
+    document.getElementById("gamesWon").innerHTML = gamesWon;
+    document.getElementById("gamesLose").innerHTML = gamesLose;
+
+    gameInProcess = false;
+}
+
+function updateBalance() {
     document.getElementById("balance").innerHTML = "$" + balance;
     document.getElementById("bet").innerHTML = "$" + bet;
 
@@ -160,17 +170,12 @@ function Result(high) {
     for(var i = 0; i < objectives.length; i++) {
         if((balance >= objectives[i].limit && !objectives[i].done) || (balance < objectives[i].limit && objectives[i].done))  { 
             objectives[i].done = balance >= objectives[i].limit;
-            objectivesNotif.push(objectives[i]);
+            if(objectives[i].done) objectivesNotif.push(objectives[i]);
+            else objectivesNotif.unshift(objectives[i]);
         }
     }
 
     if(objectivesNotif.length > 0) notifObj();
-
-    document.getElementById("gamesPlayed").innerHTML = gamesLose + gamesWon;
-    document.getElementById("gamesWon").innerHTML = gamesWon;
-    document.getElementById("gamesLose").innerHTML = gamesLose;
-
-    gameInProcess = false;
 }
 
 function Surrender() {
@@ -182,8 +187,7 @@ function Surrender() {
     balance += bet * 0.5;
     bet = 0;
 
-    document.getElementById("balance").innerHTML = balance + "$";
-    document.getElementById("bet").innerHTML = bet + "$";
+    updateBalance();
 
     gameInProcess = false;
 }

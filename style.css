@@ -109,8 +109,8 @@ h1, h2, img {
 }
 
 .objectivesNotification {
-    border-radius: 10%;
-    border-color: rgb(180, 160, 70);
+    border-radius: 5%;
+    border-color: rgb(110, 90, 50);
     border-width: 5%;
 
     width: 50%;
@@ -130,6 +130,7 @@ h1, h2, img {
 
     overflow: visible;
 }
+
 button {
     background: rgb(240,255,240);
 
