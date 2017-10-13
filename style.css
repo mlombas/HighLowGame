@@ -90,6 +90,12 @@ h1, h2, img {
     margin: 0;
 }
 
+.important {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 180%;
+    font-style: bold;
+}
+
 button {
     background: rgb(240,255,240);
 
