@@ -60,11 +60,6 @@ input[type="number"]:focus {
 }
 
 .betDiv hr {
-    height: 2%;
-
-    color: rgb(200,255,210);
-    background-color: rgb(100,155,110);
-
     border-width: 5%;
 
     margin-left: 5%;

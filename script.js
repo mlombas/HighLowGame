@@ -34,6 +34,7 @@ var objectives = [
     new Objective("Start Point", 200, "Now you can do some things", false),
     new Objective("Computer boi", 1000, "Woah, with this you could have a very GOOD computer", false),
     new Objective("Lets go somewhere", 5000, "Now you could go spend a weekend somewhere in the world", false),
+    new Objective("Small stop", 10000, "Keep going, yo will archieve much more than this", false),
     new Objective("World tour", 50000, "Ever dreamed about seeing every place in the world? now you can", false),
     new Objective("Tesla maniac", 80000, "Now you can buy a Tesla model X, one of the most futuristic cars in the world", false),
     new Objective("An island", 100000, "Do you want a island for your own? just buy it", false),
@@ -42,18 +43,28 @@ var objectives = [
     new Objective("A Eurofighter", 90000000, "How can you do not want an eurofighter", false),
     new Objective("A small cruise", 500000000, "Do your own trips to the caribean", false),
     new Objective("The casino", 2700000000, "Buy the casino and keep playing", false),
+    new Objective("A middle advance", 750000000000, "You are almost there", false),
     new Objective("Antimatter", 25000000000, "Now you can afford a gram of antimatter", false),
+    new Objective("To Mars", 1000000000000, "Go make your suitcase, we depart at morning", false),
     new Objective("EEUU", 1886000000000, "Buy the entire EEUU", false),
     new Objective("Earth", 5e15, "Buy the entire earth", false),
-    new Objective("A big step", 5e17, "Now you can stop you know", false),
-    new Objective("Ascension", 1e20, "Seriously", false),
-    new Objective("Insanity", 1e50, "Please just stop", false),
-    new Objective("Hydrogen", 1.466e56, "Buy every atom of hydrogen tha exists in the universe", false),
+    new Objective("Long Long", Math.pow(2, 64) - 1, "This is the max number that can be stored in 64 bits with full precision", false),
+    new Objective("A big step", 5e24, "Now you can stop you know", false),
+    new Objective("A little bit energy", 2.77e32, "Now you could buy all the energy in the entire galaxy", false),
+    new Objective("Insanity", 1e40, "Please just stop", false),
+    new Objective("Hydrogen", 1.466e56, "Buy every atom of hydrogen that exists in the universe", false),
+    new Objective("Ascension", 1e69, "Seriously", false),
     new Objective("Googol", 1e100, "Have 1 googol of dollars", false),
-    new Objective("The end", 1e1000, ". . .", false)
+    new Objective("The end", Number.MAX_VALUE.toPrecision(21), "This is the max value javascript can store", false),
+    new Objective("The REAL end", Infinity, "Congratulations, now go have a beer with your friends or something", false),
+     new Objective("Breaking limits", Number.MAX_SAFE_INTEGER.toFixed(), "This is the last number javascript can store with full-precision", false)
 ]
 
 var objectivesNotif = [];
+
+function Start(){
+    LoadObjectives();
+}
 
 function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"
     if(gameInProcess) {
@@ -117,7 +128,7 @@ function Result(high) {
     document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * num.value) + "px " + (-36 * num.suit) + "px";
     if(num.value == card.value || (high && num.value > card.value) || (!high && num.value < card.value)) {
         document.getElementById("resultText").innerHTML = "You win!";
-        document.getElementById("resultText").style.color = "rgb(255,100,100)";
+        document.getElementById("resultText").style.color = "rgb(100,255,100)";
 
         balance += bet * 1.5;
 
@@ -201,7 +212,11 @@ function notifObj() {
 
     var div = document.getElementById("objectivesNotification");
     div.style.display = "block";
-    div.style.backgroundColor = objective.done ? "rgb(200, 200, 100)" : "rgb(255, 180, 180)";
+    div.style.backgroundColor = objective.done ? "rgb(200, 200, 100)" : "rgb(200, 100, 200)";
+
+    var h1 = document.createElement("h1");
+    h1.innerHTML = objective.done ? "Archievement unlocked!" : "Archievement lost...";
+    h1.style.color = objective.done ? "rgb(180, 255, 180)" : "rgb(255, 180, 180)";
 
     var h2 = document.createElement("h2");
     h2.innerHTML = objective.name;
@@ -216,6 +231,7 @@ function notifObj() {
     button.innerHTML = "Next";
     button.onclick = objectivesNotif.length > 0 ? notifObj : destroyDiv;
 
+    div.appendChild(h1);
     div.appendChild(h2);
     div.appendChild(p1);
     div.appendChild(p2);
@@ -232,6 +248,8 @@ function destroyDiv() {
 }
 
 function LoadObjectives() {
+    objectives.sort(function(a, b) { return a.limit - b.limit });
+
     var div = document.getElementById("objectiveDiv");
     for(var i = 0; i < objectives.length; i++) {
         var h3 = document.createElement("h3");
