@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Mocoma">
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <script src="script.js"></script>
+    <title>HighLow</title>
+</head>
+<body>
+    <h1>The Mocoma HighLow Game</h1>
+    <div class="instructionDiv">
+        <h2>Instructions</h2>
+        <p>
+            Rules are simplified, and very simple<br/>
+            Bet what you want, but remember once money has been bet, there's no way back<br/>
+            if you win you earn 150% of the bet<br/>
+            if you lose, you will lose all your bet<br/>
+            also you can surrender, and only lose 50% of your bet<br/>
+            You have to bet for higher or lower card value, of the next card<br/>
+            If the card has the same value, you win either if you choosed higher or lower<br/>
+        </p>
+    </div>
+    <hr/>
+    <div class="betDiv" id="betDiv">
+        <img id="cardImg"/>
+        <h2>The next card will be:</h2>
+        <button onclick="Result(true)">Higher</button>
+        <button onclick="Result(false)">Lower</button>
+        <button onclick="Surrender()">Surrender</button>
+        <div class=resultDiv id="resultDiv">
+            <hr/>
+            <img id="resultImg"/>
+            <h1 id="resultText"></h1>
+        </div>
+    </div>
+    <div class="infoDiv">
+        <p>Balance: <span id="balance">$10</span></p>
+        <p>Bet: <span id="bet">$0</span></p>
+        <button onclick="Bet(1)">Bet $1</button>
+        <button onclick="Bet(5)">Bet $5</button>
+        <button onclick="Bet(10)">Bet $10</button>
+        <button onclick="Bet(50)">Bet $50</button> <br/>
+        <input type="number" name="bet" id="inputBet"></input><button onclick="Bet(-1)">Bet</button>
+        <button onclick="Game()">Start game</button>
+    </div>
+    <hr/>
+    <h2>Info</h2>
+    <p class="infoParagraph0">Games:</p><p class="infoParagraph0" id="gamesPlayed">0</p>
+    <p class="infoParagraph1">of wich won:</p><p class="infoParagraph1" id="gamesWon">0</p>
+    <p class="infoParagraph1">of wich losed:</p><p class="infoParagraph1" id="gamesLose">0</p>
+</body>
+</html>

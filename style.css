@@ -1,0 +1,81 @@
+/******************\
+ * Author: Mocoma *
+\******************/
+
+.imgDiv {
+    float: left;
+    width: 85%;
+}
+
+.betDiv {
+    border-radius: 2%;
+    border-color: rgb(100,200,100);
+    border-style: dashed;
+}
+
+.betDiv * {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.betDiv hr {
+    height: 2%;
+    color: rgb(200,255,210);
+    background-color: rgb(100,155,110);
+    border-width: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+img {
+    border-width: 3%;
+    border-style: groove;
+    border-color: rgb(200, 200, 200);
+    margin: auto;
+}
+
+body {
+    text-align: center;
+    font-family: consolas;
+}
+
+h1, h2, img {
+    margin: 0;
+}
+
+button {
+    background: rgb(240,255,240);
+    border-radius: 1%;
+    border-color: rgb(200,100,250);
+    margin: 2%;
+}
+
+button:hover {
+    background-color: rgb(200,200,200);
+}
+
+button:active {
+    background-color: rgb(100,100,100);
+}
+
+input {
+    text-align: center;
+    width: 10%;
+}
+
+#cardImg, #resultImg {
+    width: 27px;
+    height: 36px;
+}
+
+.resultDiv {
+    display: none;
+}
+
+.infoParagraph0 {
+    font-size: 125%;
+}
+
+.infoParagraph1 {
+    font-size: 110%;
+}
