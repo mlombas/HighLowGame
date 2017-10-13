@@ -13,6 +13,36 @@
     border-style: dashed;
 }
 
+input[type="number"] {
+    text-overflow: ellipsis;
+
+    transition-property: all;
+    transition-duration: .2s;
+
+    text-align: center;
+
+    color: rgb(0, 0, 0);
+    
+    border: none;
+    border-bottom-color: rgb(150,200,160);
+    border-bottom-left-radius: -10%; 
+    border-bottom-right-radius: -10%; 
+    border-bottom-style: dashed;
+
+    width: 3%;
+    height: 10%;
+}
+
+input[type="number"]:focus {
+    width: 10%;
+
+    color: rgb(100, 100, 100);
+
+    background-color: rgb(240, 255, 240); 
+
+    outline: none;
+}
+
 .betDiv * {
     margin-top: 2%;
     margin-bottom: 2%;
@@ -20,9 +50,12 @@
 
 .betDiv hr {
     height: 2%;
+
     color: rgb(200,255,210);
     background-color: rgb(100,155,110);
+
     border-width: 5%;
+
     margin-left: 5%;
     margin-right: 5%;
 }
@@ -31,6 +64,7 @@ img {
     border-width: 3%;
     border-style: groove;
     border-color: rgb(200, 200, 200);
+
     margin: auto;
 }
 
@@ -45,8 +79,10 @@ h1, h2, img {
 
 button {
     background: rgb(240,255,240);
+
     border-radius: 1%;
     border-color: rgb(200,100,250);
+
     margin: 2%;
 }
 
@@ -56,11 +92,6 @@ button:hover {
 
 button:active {
     background-color: rgb(100,100,100);
-}
-
-input {
-    text-align: center;
-    width: 10%;
 }
 
 #cardImg, #resultImg {
