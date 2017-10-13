@@ -34,7 +34,7 @@ input[type="number"] {
 }
 
 input[type="number"]:focus {
-    width: 10%;
+    width: 10em;
 
     color: rgb(100, 100, 100);
 
@@ -92,11 +92,15 @@ h1, h2, img {
 }
 
 .objDiv {
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    margin-top: 0;
+    margin-bottom: 0;
 
     border-color: rgb(100,200,180);
     border-style: inset;
+
+    font-size: 2vmin;
 }
 
 .objSpan {
