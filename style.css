@@ -130,6 +130,13 @@ h1, h2, img {
     overflow: visible;
 }
 
+.aditionalInfo {
+    font-size: 60%;
+    color: rgb(140, 150, 150);
+
+    background-color: rgb(80, 90, 70);
+}
+
 button {
     background: rgb(240,255,240);
 
