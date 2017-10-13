@@ -21,7 +21,41 @@ class Card {
     }
 }
 
-function Bet(n){ //In this function, n == -1 means "Use the value from he field"
+class Objective {
+    constructor(name, limit, text, done) {
+        this.name = name;
+        this.limit = limit;
+        this.text = text;
+        this.done = done;
+    }
+}
+
+var objectives = [
+    new Objective("Start Point", 200, "Now you can do some things", false),
+    new Objective("Computer boi", 1000, "Woah, with this you could have a very GOOD computer", false),
+    new Objective("Lets go somewhere", 5000, "Now you could go spend a weekend somewhere in the world", false),
+    new Objective("World tour", 50000, "Ever dreamed about seeing every place in the world? now you can", false),
+    new Objective("Tesla maniac", 80000, "Now you can buy a Tesla model X, one of the most futuristic cars in the world", false),
+    new Objective("An island", 100000, "Do you want a island for your own? just buy it", false),
+    new Objective("Manhattan house", 1000000, "Now you can live in manhattan", false),
+    new Objective("A Mansion", 45000000, "Have a mansion for your efforts", false),
+    new Objective("A Eurofighter", 90000000, "How can you do not want an eurofighter", false),
+    new Objective("A small cruise", 500000000, "Do your own trips to the caribean", false),
+    new Objective("The casino", 2700000000, "Buy the casino and keep playing", false),
+    new Objective("Antimatter", 25000000000, "Now you can afford a gram of antimatter", false),
+    new Objective("EEUU", 1886000000000, "Buy the entire EEUU", false),
+    new Objective("Earth", 5e15, "Buy the entire earth", false),
+    new Objective("A big step", 5e17, "Now you can stop you know", false),
+    new Objective("Ascension", 1e20, "Seriously", false),
+    new Objective("Insanity", 1e50, "Please just stop", false),
+    new Objective("Hydrogen", 1.466e56, "Buy every atom of hydrogen tha exists in the universe", false),
+    new Objective("Googol", 1e100, "Have 1 googol of dollars", false),
+    new Objective("The end", 1e1000, ". . .", false)
+]
+
+var objectivesNotif = [];
+
+function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"
     if(gameInProcess) {
         alert("Cannot bet while in game");
         return;
@@ -34,6 +68,10 @@ function Bet(n){ //In this function, n == -1 means "Use the value from he field"
             alert("You must bet something greater than 0");
             return;
         }
+    }
+
+    if(n == -2) {
+        n = balance;
     }
 
     if(balance - n < 0) {
@@ -117,7 +155,16 @@ function Result(high) {
         document.body.innerHTML += "\n<button onclick='location.reload(true)'>Play again</button>";
     }
 
-    if(balance > 9000) alert("ITS OVER 9000!!");
+    var someObjDone = false;
+
+    for(var i = 0; i < objectives.length; i++) {
+        if((balance >= objectives[i].limit && !objectives[i].done) || (balance < objectives[i].limit && objectives[i].done))  { 
+            objectives[i].done = balance >= objectives[i].limit;
+            objectivesNotif.push(objectives[i]);
+        }
+    }
+
+    if(objectivesNotif.length > 0) notifObj();
 
     document.getElementById("gamesPlayed").innerHTML = gamesLose + gamesWon;
     document.getElementById("gamesWon").innerHTML = gamesWon;
@@ -139,4 +186,63 @@ function Surrender() {
     document.getElementById("bet").innerHTML = bet + "$";
 
     gameInProcess = false;
+}
+
+function notifObj() {
+    if(objectivesNotif.length == 0) return;
+
+    destroyDiv();
+
+    var objective = objectivesNotif.shift();
+
+    var div = document.getElementById("objectivesNotification");
+    div.style.display = "block";
+    div.style.backgroundColor = objective.done ? "rgb(200, 200, 100)" : "rgb(255, 180, 180)";
+
+    var h2 = document.createElement("h2");
+    h2.innerHTML = objective.name;
+
+    var p1 = document.createElement("p");
+    p1.innerHTML = "$" + objective.limit;
+
+    var p2 = document.createElement("p");
+    p2.innerHTML = objective.text;
+
+    var button = document.createElement("button");
+    button.innerHTML = "Next";
+    button.onclick = objectivesNotif.length > 0 ? notifObj : destroyDiv;
+
+    div.appendChild(h2);
+    div.appendChild(p1);
+    div.appendChild(p2);
+    div.appendChild(button);
+
+    document.getElementById("objective" + objective.name).style.textDecoration = objective.done ? "line-through" : "none";
+    document.getElementById("objective" + objective.name).style.backgroundColor = objective.done ? "rgb(180, 250, 180)" : "rgb(255, 255, 255)";
+}
+
+function destroyDiv() {
+    var div = document.getElementById("objectivesNotification");
+    while(div.firstChild) div.removeChild(div.firstChild);
+    div.style.display = "none";
+}
+
+function LoadObjectives() {
+    var div = document.getElementById("objectiveDiv");
+    for(var i = 0; i < objectives.length; i++) {
+        var h3 = document.createElement("h3");
+        h3.innerHTML = objectives[i].name;
+
+        var span = document.createElement("span");
+        span.innerHTML = "$" + objectives[i].limit;
+        span.className = "objSpan";
+        
+        var div0 = document.createElement("div");
+        div0.className = "objDiv";
+        div0.id = "objective" + objectives[i].name;
+        div0.appendChild(h3);
+        div0.appendChild(span);
+
+        div.appendChild(div0);
+    }
 }

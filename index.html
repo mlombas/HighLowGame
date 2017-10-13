@@ -8,7 +8,9 @@
     <script src="script.js"></script>
     <title>HighLow</title>
 </head>
-<body>
+<body onload="LoadObjectives()">
+    <div id="objectivesNotification" class="objectivesNotification">
+    </div>
     <h1>The Mocoma HighLow Game</h1>
     <div class="instructionDiv">
         <h2>Instructions</h2>
@@ -43,8 +45,13 @@
         <button onclick="Bet(5)">Bet $5</button>
         <button onclick="Bet(10)">Bet $10</button>
         <button onclick="Bet(50)">Bet $50</button>
-        <input type="number" name="bet" id="inputBet" placeholder="Enter cuantity"/><button onclick="Bet(-1)">Bet</button><br/>
+        <input type="number" name="bet" id="inputBet" placeholder="Enter cuantity"/><button onclick="Bet(-1)">Bet</button>
+        <button onclick="Bet(-2)">Bet All</button><br/>
         <button onclick="Game()">Start game</button>
+    </div>
+    <hr/>
+    <h2>Archievements</h2>
+    <div id="objectiveDiv">
     </div>
     <hr/>
     <h2>Info</h2>

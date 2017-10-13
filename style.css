@@ -96,6 +96,40 @@ h1, h2, img {
     font-style: bold;
 }
 
+.objDiv {
+    margin-left: 20%;
+    margin-right: 20%;
+
+    border-color: rgb(100,200,180);
+    border-style: inset;
+}
+
+.objSpan {
+    font-size: 150%;
+}
+
+.objectivesNotification {
+    border-radius: 10%;
+    border-color: rgb(180, 160, 70);
+    border-width: 5%;
+
+    width: 50%;
+    height: auto;
+
+    position: fixed;
+    top: 25%;
+    left: 25%;
+
+    display: none;
+
+    background-color: rgb(200, 200, 100);
+
+    text-align: center;
+    font-family: Consolas;
+    font-size: 120%;
+
+    overflow: visible;
+}
 button {
     background: rgb(240,255,240);
 
