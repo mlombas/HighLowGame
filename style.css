@@ -17,7 +17,7 @@ input[type="number"] {
     text-overflow: ellipsis;
 
     transition-property: all;
-    transition-duration: .2s;
+    transition-duration: .5s;
 
     text-align: center;
 
@@ -32,11 +32,11 @@ input[type="number"] {
     width: 5em;
     height: 10%;
 
-    margin-left: 10em;
+    margin-left: 15em;
 }
 
 input[type="number"]:focus {
-    width: 15em;
+    width: 20em;
     margin-left: 0;
 
     color: rgb(100, 100, 100);
