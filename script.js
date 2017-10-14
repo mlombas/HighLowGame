@@ -2,7 +2,7 @@
  * Author: Mocoma *
 \******************/
 
-var balance = 10;
+var balance;
 var bet = 0;
 var card;
 
@@ -64,6 +64,7 @@ var objectivesNotif = [];
 
 function Start(){
     LoadObjectives();
+    balance = parseFloat(document.getElementById("balance").innerHTML);
 }
 
 function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"
