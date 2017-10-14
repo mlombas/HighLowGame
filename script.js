@@ -64,7 +64,7 @@ var objectivesNotif = [];
 
 function Start(){
     LoadObjectives();
-    balance = parseFloat(document.getElementById("balance").innerHTML);
+    balance = parseFloat(document.getElementById("balance").innerHTML.substr(1));
 }
 
 function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"

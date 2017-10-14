@@ -31,10 +31,13 @@ input[type="number"] {
 
     width: 5em;
     height: 10%;
+
+    margin-left: 10em;
 }
 
 input[type="number"]:focus {
-    width: 10em;
+    width: 15em;
+    margin-left: 0;
 
     color: rgb(100, 100, 100);
 
