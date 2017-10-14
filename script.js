@@ -35,19 +35,19 @@ var objectives = [
     new Objective("Computer boi", 1000, "Woah, with this you could have a very GOOD computer", false),
     new Objective("Lets go somewhere", 5000, "Now you could go spend a weekend somewhere in the world", false),
     new Objective("Small stop", 10000, "Keep going, yo will archieve much more than this", false),
-    new Objective("World tour", 50000, "Ever dreamed about seeing every place in the world? now you can", false),
+    new Objective("Earth-level orbit", 50000, "Ever dreamed about seeing every place in the world? now you can", false),
     new Objective("Tesla maniac", 80000, "Now you can buy a Tesla model X, one of the most futuristic cars in the world", false),
-    new Objective("An island", 100000, "Do you want a island for your own? just buy it", false),
-    new Objective("Manhattan house", 1000000, "Now you can live in manhattan", false),
-    new Objective("A Mansion", 45000000, "Have a mansion for your efforts", false),
-    new Objective("A Eurofighter", 90000000, "How can you do not want an eurofighter", false),
-    new Objective("A small cruise", 500000000, "Do your own trips to the caribean", false),
-    new Objective("The casino", 2700000000, "Buy the casino and keep playing", false),
+    new Objective("Living in the sea", 100000, "Do you want a island for your own? just buy it", false),
+    new Objective("Manhattan man", 1000000, "Now you can live in manhattan", false),
+    new Objective("The king", 58000000, "Now you can afford a castle from medieval times", false),
+    new Objective("I believe you can fly", 90000000, "Buy an Eurofighter and cross the skies", false),
+    new Objective("Here we go captain", 500000000, "Do your own trips to the caribean with your newly adquired medium-size cruise", false),
+    new Objective("Ruler of the place", 2700000000, "Buy the casino and keep playing", false),
     new Objective("A middle advance", 750000000000, "You are almost there", false),
-    new Objective("Antimatter", 25000000000, "Now you can afford a gram of antimatter", false),
-    new Objective("To Mars", 1000000000000, "Go make your suitcase, we depart at morning", false),
+    new Objective("Be carefull with that", 25000000000, "Now you can afford a gram of antimatter, that explodes at contact with matter", false),
+    new Objective("77M kilometers", 1000000000000, "Go make your suitcase, we depart at morning... to mars", false),
     new Objective("EEUU", 1886000000000, "Buy the entire EEUU", false),
-    new Objective("Earth", 5e15, "Buy the entire earth", false),
+    new Objective("The pale blue dot", 5e15, "Buy the entire earth", false),
     new Objective("Long Long", Math.pow(2, 64) - 1, "This is the max number that can be stored in 64 bits with full precision", false),
     new Objective("A big step", 5e24, "Now you can stop you know", false),
     new Objective("A little bit energy", 2.77e32, "Now you could buy all the energy in the entire galaxy", false),
@@ -90,7 +90,7 @@ function Bet(n){ //In this function, n == -1 means "Use the value from he field"
         return;
     }
 
-    balance -= n;
+    if(isNaN(balance -= n)) balance = 1;
     bet += n;
 
     document.getElementById("balance").innerHTML = "$" + balance;
