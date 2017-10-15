@@ -11,6 +11,18 @@
 <body onload="Start()">
     <div id="objectivesNotification" class="objectivesNotification">
     </div>
+    <div class="specialDivs">
+        <button class="exitButton" onclick="document.getElementById('objectiveDiv').parentNode.style.display = 'none'">X</button>
+        <h2>Archievements</h2>
+        <div id="objectiveDiv">
+        </div>
+    </div>
+    <div class="specialDivs">
+         <button class="exitButton" onclick="document.getElementById('classDiv').parentNode.style.display = 'none'">X</button>
+         <h2>Classes</h2>
+         <div id="classDiv">
+         </div>
+    </div>
     <h1>The Mocoma HighLow Game</h1>
     <div class="instructionDiv">
         <h2>Instructions</h2>
@@ -29,10 +41,10 @@
     <div class="betDiv" id="betDiv">
         <img id="cardImg"/>
         <p class="important">The next card will be...</p>
-        <button onclick="Result(true)">Higher</button> <p> or </p>
-        <button onclick="Result(false)">Lower</button>
+        <button onclick="Result(1)">Higher</button> <p> or </p>
+        <button onclick="Result(-1)">Lower</button>
         <p class="important">than this one</p> <br/>
-        <button onclick="Surrender()" class="surrenderButton">I Surrender</button>
+        <button onclick="Result(0)" class="surrenderButton">I Surrender</button>
         <div class=resultDiv id="resultDiv">
             <hr/>
             <img id="resultImg"/>
@@ -40,7 +52,7 @@
         </div>
     </div>
     <div class="infoDiv">
-        <p>Balance: <span id="balance">$10</span></p>
+        <p>Balance: <span id="balance">$100</span></p>
         <p>Bet: <span id="bet">$0</span></p>
         <button onclick="Bet(1)">Bet $1</button>
         <button onclick="Bet(5)">Bet $5</button>
@@ -59,16 +71,16 @@
         <button onclick="Game()">Start game</button>
     </div>
     <hr/>
-    <h2>Archievements</h2>
-    <div id="objectiveDiv">
-    </div>
+    <h2>More</h2>
+    <button onclick="document.getElementById('objectiveDiv').parentNode.style.display = 'block'">Archievements</button>
+    <button onclick="document.getElementById('classDiv').parentNode.style.display = 'block'">Classes</button>
     <hr/>
     <h2>Info</h2>
     <p class="infoParagraph0">Games:</p><p class="infoParagraph0" id="gamesPlayed">0</p>
     <p class="infoParagraph1">of wich won:</p><p class="infoParagraph1" id="gamesWon">0</p>
     <p class="infoParagraph1">of wich losed:</p><p class="infoParagraph1" id="gamesLose">0</p>
     <pre class="aditionalInfo">
-        Version 1.0.5          Author: Mocoma
+        Version 1.1.0          Author: Mocoma
     </pre>
 </body>
 </html>

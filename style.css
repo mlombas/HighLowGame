@@ -140,6 +140,50 @@ h1, h2, img {
     background-color: rgb(80, 90, 70);
 }
 
+.specialDivs {
+    display: none;
+
+    width: 75%;
+    height: 90%;
+
+    position: fixed;
+    top: 5%;
+    left: 12.5%;
+
+    border-color: rgb(100, 10, 100);
+    border-width: 30%;
+    border-style: solid;
+
+    background-color: rgb(255, 255, 255);
+
+    overflow-y: scroll;
+}
+
+#objectiveDiv, #classDiv {
+    padding: 5%;
+}
+
+#classDiv div {
+    display: inline-block;
+}
+
+.exitButton {
+    border-color: rgb(200, 100, 100);
+    border-style: solid;
+
+    color: rgb(255, 100, 100);
+
+    background-color: rgb(255, 200, 200);
+
+    position: absolute;
+    top: 2%;
+    left: 1%;
+}
+
+.exitButton:hover {
+    background-color: rgb(255, 50, 50);
+}
+
 button {
     background: rgb(240,255,240);
 
@@ -175,4 +219,44 @@ button:active {
 
 .infoParagraph1 {
     font-size: 110%;
+}
+
+.classUnlocked {
+    width : 25%;
+    height: auto;
+
+    border-color: rgb(100, 255, 100);
+    border-width: 2%;
+    border-radius: 3%;
+    border-style: solid;
+}
+
+.classUnlocked:hover {
+    border-style: outset;
+}
+
+.classLocked {
+    width : 25%;
+    height: auto;
+
+    border-color: rgb(180, 100, 100);
+    border-width: 2%;
+    border-radius: 3%;
+    border-style: solid;
+
+    color: rgb(50, 50, 50);
+
+    background-color: rgb(100, 100, 100);
+}
+
+.currClass {
+    width : 25%;
+    height: auto;
+
+    border-color: rgb(100, 180, 100);
+    border-width: 2%;
+    border-radius: 3%;
+    border-style: solid;
+
+    background-color: rgb(180, 255, 180);
 }

@@ -4,7 +4,9 @@
 
 var balance;
 var bet = 0;
-var card;
+var card, nextCard;
+
+var currClass;
 
 var gameInProcess = false;
 
@@ -27,6 +29,18 @@ class Objective {
         this.limit = limit;
         this.text = text;
         this.done = done;
+    }
+}
+
+class Class {
+    constructor(name, unlockText, text, srcImage, unlockAction, gameAction, unlocked) {
+        this.name = name;
+        this.unlockText = unlockText;
+        this.text = text;
+        this.srcImage = srcImage;
+        this.unlockAction = unlockAction;
+        this.gameAction = gameAction;
+        this.unlocked = unlocked;
     }
 }
 
@@ -57,13 +71,30 @@ var objectives = [
     new Objective("Googol", 1e100, "Have 1 googol of dollars", false),
     new Objective("The end", Number.MAX_VALUE.toPrecision(21), "This is the max value javascript can store", false),
     new Objective("The REAL end", Infinity, "Congratulations, now go have a beer with your friends or something", false),
-     new Objective("Breaking limits", Number.MAX_SAFE_INTEGER.toFixed(), "This is the last number javascript can store with full-precision", false)
-]
+    new Objective("Breaking limits", Number.MAX_SAFE_INTEGER.toFixed(), "This is the last number javascript can store with full-precision", false)
+];
 
 var objectivesNotif = [];
 
+var classes = [
+    new Class("Peasant", "defaullt class", "this class is the default, loses the 100% of the bet and wins 150%, can surrender with 50%",
+        "peasantImg.jpg", function() { return true; },
+        function(code) {
+            NormalGame(code, 0, 1.5, 0.5);    
+        }, true),
+    new Class("No risk taker", "Play a bit and earn experience", "A class that does not take any risks, and any is ANY, in fact, it keeps 50% if it loses, in exange it only wins 125% of the bet, and loses 100% on surrender",
+        "experiencedImg.jpg", function() { return (gamesWon + gamesLose) >= 1; }, 
+        function(code) {
+            NormalGame(code, 0.5, 1.25, 0);
+        }, false),
+];
+
 function Start(){
     LoadObjectives();
+    LoadClasses();
+
+    SetCurrentClass(classes[0].name);
+
     balance = parseFloat(document.getElementById("balance").innerHTML.substr(1));
 }
 
@@ -111,35 +142,23 @@ function Game() {
     }
 
     card = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4));
+    do { nextCard = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4)); }while(nextCard.equals(card));
     document.getElementById("resultDiv").style.display = "none";
     document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";
 
     gameInProcess = true;
 }
 
-function Result(high) {
+function Result(code) {
     if(!gameInProcess) {
         alert("You must start a game first");
         return;
     }
-
-    var num;
-    do { num = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4)); }while(num.equals(card));
+    
     document.getElementById("resultDiv").style.display = "block";
-    document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * num.value) + "px " + (-36 * num.suit) + "px";
-    if(num.value == card.value || (high && num.value > card.value) || (!high && num.value < card.value)) {
-        document.getElementById("resultText").innerHTML = "You win!";
-        document.getElementById("resultText").style.color = "rgb(100,255,100)";
-
-        balance += bet * 1.5;
-
-        gamesWon++;
-    } else { 
-        document.getElementById("resultText").innerHTML = "You lose...";
-        document.getElementById("resultText").style.color = "rgb(255,100,100)";
-
-        gamesLose++;
-    }
+    if(code != 0) document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px";
+   
+    currClass.gameAction(code);
 
     bet = 0;
 
@@ -148,6 +167,10 @@ function Result(high) {
     document.getElementById("gamesPlayed").innerHTML = gamesLose + gamesWon;
     document.getElementById("gamesWon").innerHTML = gamesWon;
     document.getElementById("gamesLose").innerHTML = gamesLose;
+
+    for(var i = 0; i < classes.length; i++) {
+        if(!classes[i].unlocked && classes[i].unlockAction()) unlock(classes[i]);
+    }
 
     gameInProcess = false;
 }
@@ -188,20 +211,6 @@ function updateBalance() {
     }
 
     if(objectivesNotif.length > 0) notifObj();
-}
-
-function Surrender() {
-    if(!gameInProcess) {
-        alert("You must start a game first");
-        return;
-    }
-
-    balance += bet * 0.5;
-    bet = 0;
-
-    updateBalance();
-
-    gameInProcess = false;
 }
 
 function notifObj() {
@@ -268,4 +277,107 @@ function LoadObjectives() {
 
         div.appendChild(div0);
     }
+}
+
+function LoadClasses() {
+    var div = document.getElementById("classDiv");
+
+    for(var i = 0; i < classes.length; i++) {
+        var h3 = document.createElement("h3");
+        h3.innerHTML = classes[i].name;
+
+        var img = document.createElement("img");
+        img.src = classes[i].srcImage;
+
+        var p = document.createElement("p");
+        p.innerHTML = classes[i].text;
+
+        var div0 = document.createElement("div");
+        div0.className = classes[i].unlocked ? "classUnlocked" : "classLocked";
+        div0.id = "class" + classes[i].name;
+
+        div0.appendChild(h3);
+        div0.appendChild(img);
+        div0.appendChild(p);
+
+        div.appendChild(div0);
+    }
+}
+
+function SetCurrentClass(newClassName) {
+    var lastClass = currClass;
+    currClass = classes[classes.findIndex(function(c) { return c.name == newClassName; })];
+    document.getElementById("class" + currClass.name).className = "currClass";
+    document.getElementById("class" + currClass.name).onclick = function() {};
+    if(lastClass) {
+        document.getElementById("class" + lastClass.name).className = "classUnlocked";
+        document.getElementById("class" + lastClass.name).onclick = function() { SetCurrentClass(lastClass.name) };
+    }
+}
+
+function unlock(toUnlock) {
+    toUnlock.unlocked = true;
+
+    destroyDiv();
+
+    var h1 = document.createElement("h1");
+    h1.innerHTML = "New class unlocked!";
+    h1.style.color = "rgb(200, 255, 200)";
+
+    var h2 = document.createElement("h2");
+    h2.innerHTML = toUnlock.name;
+
+    var img = document.createElement("img");
+    img.src = toUnlock.srcImage;
+
+    var p = document.createElement("p");
+    p.innerHTML = toUnlock.text + "<br/>Select it from the class menu";
+    p.className = "infoParagraph0";
+
+    var button = document.createElement("button");
+    button.innerHTML = "Next";
+    button.onclick = destroyDiv;
+
+    var div = document.getElementById("objectivesNotification");
+    div.appendChild(h1);
+    div.appendChild(h2);
+    div.appendChild(img);
+    div.appendChild(p);
+    div.appendChild(button);
+
+    div.style.backgroundColor = "rgb(10, 255, 10)";
+    div.style.display = "block";
+
+    var div0 = document.getElementById("class" + toUnlock.name);
+    div0.className = "classUnlocked";
+    div0.onclick = function() { SetCurrentClass(toUnlock.name) };
+}
+
+function NormalGame(code, losePercent, winPercent, surrenderPercent) {
+    if(code == 0) {
+        balance += bet * surrenderPercent;
+        bet = 0;
+
+        return;
+    }
+
+    var high = code == 1;
+
+    if((high && nextCard.value >= card.value) || (!high && nextCard.value <= card.value)) {
+        document.getElementById("resultText").innerHTML = "You win!";
+        document.getElementById("resultText").style.color = "rgb(100,255,100)"; 
+
+        balance += bet * winPercent;    
+
+        gamesWon++;
+    } else { 
+        document.getElementById("resultText").innerHTML = "You lose...";
+        document.getElementById("resultText").style.color = "rgb(255,100,100)";
+
+        balance += bet * losePercent;
+
+        gamesLose++;
+    }
+
+    bet = 0;
 }
