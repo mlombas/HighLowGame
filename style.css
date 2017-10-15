@@ -213,14 +213,9 @@ button:active {
     display: none;
 }
 
-.infoParagraph0 {
+.infoParagraph {
     font-size: 125%;
 }
-
-.infoParagraph1 {
-    font-size: 110%;
-}
-
 .classUnlocked {
     width : 25%;
     height: auto;

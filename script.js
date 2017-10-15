@@ -78,14 +78,48 @@ var objectivesNotif = [];
 
 var classes = [
     new Class("Peasant", "defaullt class", "this class is the default, loses the 100% of the bet and wins 150%, can surrender with 50%",
-        "peasantImg.jpg", function() { return true; },
+        "classesImg/peasantImg.jpg", function(code) { return true; },
         function(code) {
             NormalGame(code, 0, 1.5, 0.5);    
         }, true),
-    new Class("No risk taker", "Play a bit and earn experience", "A class that does not take any risks, and any is ANY, in fact, it keeps 50% if it loses, in exange it only wins 125% of the bet, and loses 100% on surrender",
-        "experiencedImg.jpg", function() { return (gamesWon + gamesLose) >= 1; }, 
+    new Class("Experienced", "Play a bit and earn experience", "A class that does not take any risks, and any is ANY, in fact, it keeps 50% if it loses, in exange it only wins 125% of the bet, and loses 100% on surrender",
+        "classesImg/experiencedImg.jpg", function(code) { return (gamesWon + gamesLose) >= 10; }, 
         function(code) {
             NormalGame(code, 0.5, 1.25, 0);
+        }, false),
+    new Class("Cheater", "Get a 6 when its a 6", "This class knows a way to cheat, so you can win a 300% of what you bet, but there is a 10% chance you get caught and lose all your money, also you lose 100% of the bet and surrender win 50%",
+        "classesImg/cheaterImg.jpg", function(code) { return card.value == 5 && nextCard.value == 5; },
+        function(code) {
+            NormalGame(code, 0, 3, 0.5);
+
+            if(Math.random() <= 0.1 && code != 0) {
+                destroyDiv();
+
+                var h1 = document.createElement("h1");
+                h1.innerHTML = "You have been caught";
+                h1.style.color = "rgb(250, 100, 100)";
+
+                var button = document.createElement("button");
+                button.innerHTML = "Next";
+                button.onclick = function() { destroyDiv(); balance = 0; updateBalance(); };
+
+                var div = document.getElementById("objectivesNotification");
+                div.appendChild(h1);
+                div.appendChild(button);
+
+                div.style.backgroundColor = "rgb(255, 10, 10)";
+                div.style.display = "block";
+            }
+        }, false),
+    new Class("Mage", "This class likes risky situations", "Have magic powers and a 25% of the time predicts the next card, wins with 150% of the bet and loses all, surrenders with 50%",
+        "classesImg/mageImg.jpg", function(code) { return (card.value == 0 && nextCard.value == 0 && code == -1) || (card.value == 12 && nextCard.value == 12 && code == 1); },
+        function(code) {
+            NormalGame(code, 0, 1.5, 0.5);
+        }, false),
+    new Class("Inventor", "Loss is the key to learning", "This techy class is a really good inventor... of excuses, but can save you, with his 10% of probabilities of recover 100% of the bet on lose, in normal loses it loses with 0% of the bet, and wins 150%, but surrenders with 25%",
+        "inventorImg.jpg", function() { return gamesLose >= 20; },
+        function(code) {
+            NormalGame(code, Math.random() <= 0.1 ? 1 : 0, 1.50, 0.25);
         }, false),
 ];
 
@@ -146,6 +180,12 @@ function Game() {
     document.getElementById("resultDiv").style.display = "none";
     document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";
 
+    if(currClass.name == "Mage" && Math.random() <= 0.25) {
+        document.getElementById("resultDiv").style.display = "block";
+        document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px";
+        document.getElementById("resultText").innerHTML = "";
+    }
+
     gameInProcess = true;
 }
 
@@ -169,7 +209,7 @@ function Result(code) {
     document.getElementById("gamesLose").innerHTML = gamesLose;
 
     for(var i = 0; i < classes.length; i++) {
-        if(!classes[i].unlocked && classes[i].unlockAction()) unlock(classes[i]);
+        if(!classes[i].unlocked && classes[i].unlockAction(code)) unlock(classes[i]);
     }
 
     gameInProcess = false;
@@ -216,39 +256,13 @@ function updateBalance() {
 function notifObj() {
     if(objectivesNotif.length == 0) return;
 
-    destroyDiv();
+        var objective = objectivesNotif.shift();
 
-    var objective = objectivesNotif.shift();
+        notify(objective.done ? "Archievement unlocked!" : "Archievement lost...", objective.done ? "rgb(180, 255, 180)" : "rgb(255, 180, 180)",
+             objective.name,"", "$" + objective.limit + "<br/>" + objective.text, objective.done ? "rgb(200, 200, 100)" : "rgb(200, 100, 200)", objectivesNotif.length > 0 ? notifObj : destroyDiv);
 
-    var div = document.getElementById("objectivesNotification");
-    div.style.display = "block";
-    div.style.backgroundColor = objective.done ? "rgb(200, 200, 100)" : "rgb(200, 100, 200)";
-
-    var h1 = document.createElement("h1");
-    h1.innerHTML = objective.done ? "Archievement unlocked!" : "Archievement lost...";
-    h1.style.color = objective.done ? "rgb(180, 255, 180)" : "rgb(255, 180, 180)";
-
-    var h2 = document.createElement("h2");
-    h2.innerHTML = objective.name;
-
-    var p1 = document.createElement("p");
-    p1.innerHTML = "$" + objective.limit;
-
-    var p2 = document.createElement("p");
-    p2.innerHTML = objective.text;
-
-    var button = document.createElement("button");
-    button.innerHTML = "Next";
-    button.onclick = objectivesNotif.length > 0 ? notifObj : destroyDiv;
-
-    div.appendChild(h1);
-    div.appendChild(h2);
-    div.appendChild(p1);
-    div.appendChild(p2);
-    div.appendChild(button);
-
-    document.getElementById("objective" + objective.name).style.textDecoration = objective.done ? "line-through" : "none";
-    document.getElementById("objective" + objective.name).style.backgroundColor = objective.done ? "rgb(180, 250, 180)" : "rgb(255, 255, 255)";
+        document.getElementById("objective" + objective.name).style.textDecoration = objective.done ? "line-through" : "none";
+        document.getElementById("objective" + objective.name).style.backgroundColor = objective.done ? "rgb(180, 250, 180)" : "rgb(255, 255, 255)";
 }
 
 function destroyDiv() {
@@ -290,11 +304,12 @@ function LoadClasses() {
         img.src = classes[i].srcImage;
 
         var p = document.createElement("p");
-        p.innerHTML = classes[i].text;
+        p.innerHTML = classes[i].unlockText;
 
-        var div0 = document.createElement("div");
-        div0.className = classes[i].unlocked ? "classUnlocked" : "classLocked";
-        div0.id = "class" + classes[i].name;
+        var div = document.getElementById("classDiv");
+        div.innerHTML += "<div class=" + (classes[i].unlocked ? "classUnlocked" : "classLocked") + " id=class" + classes[i].name + (classes[i].unlocked ? " onclick=SetCurrentClass('" + classes[i].name + "')" : "") + "></div>";
+
+        var div0 = document.getElementById("class" + classes[i].name);
 
         div0.appendChild(h3);
         div0.appendChild(img);
@@ -320,33 +335,7 @@ function unlock(toUnlock) {
 
     destroyDiv();
 
-    var h1 = document.createElement("h1");
-    h1.innerHTML = "New class unlocked!";
-    h1.style.color = "rgb(200, 255, 200)";
-
-    var h2 = document.createElement("h2");
-    h2.innerHTML = toUnlock.name;
-
-    var img = document.createElement("img");
-    img.src = toUnlock.srcImage;
-
-    var p = document.createElement("p");
-    p.innerHTML = toUnlock.text + "<br/>Select it from the class menu";
-    p.className = "infoParagraph0";
-
-    var button = document.createElement("button");
-    button.innerHTML = "Next";
-    button.onclick = destroyDiv;
-
-    var div = document.getElementById("objectivesNotification");
-    div.appendChild(h1);
-    div.appendChild(h2);
-    div.appendChild(img);
-    div.appendChild(p);
-    div.appendChild(button);
-
-    div.style.backgroundColor = "rgb(10, 255, 10)";
-    div.style.display = "block";
+    notify("New class unlocked!", "rgb(200, 255, 200)", toUnlock.name, toUnlock.srcImage, toUnlock.text + "<br/>Select it from the class menu", "rgb(10, 255, 10)");
 
     var div0 = document.getElementById("class" + toUnlock.name);
     div0.className = "classUnlocked";
@@ -380,4 +369,45 @@ function NormalGame(code, losePercent, winPercent, surrenderPercent) {
     }
 
     bet = 0;
+}
+
+function notify(title, titleColor, subtitle, imgSource, text, backgroundColor, specialButtonEffect) {
+
+    destroyDiv();
+    
+    if(title != "") {
+        var h1 = document.createElement("h1");
+        h1.innerHTML = title;
+        h1.style.color = titleColor;
+    }
+
+    if(subtitle != "") {
+        var h2 = document.createElement("h2");
+        h2.innerHTML = subtitle;
+    }
+
+    if(imgSource != "") {
+        var img = document.createElement("img");
+        img.src = imgSource;
+    }
+
+    if(text != "") {
+        var p = document.createElement("p");
+        p.innerHTML = text;
+        p.className = "infoParagraph";
+    }
+
+    var button = document.createElement("button");
+    button.innerHTML = "Next";
+    button.onclick = specialButtonEffect != "" ? specialButtonEffect : destroyDiv;
+
+    var div = document.getElementById("objectivesNotification");
+    if(h1) div.appendChild(h1);
+    if(h2) div.appendChild(h2);
+    if(img) div.appendChild(img);
+    if(p) div.appendChild(p);
+    div.appendChild(button);
+
+    div.style.backgroundColor = backgroundColor;
+    div.style.display = "block";
 }
