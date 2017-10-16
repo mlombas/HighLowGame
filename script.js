@@ -33,13 +33,14 @@ class Objective {
 }
 
 class Class {
-    constructor(name, unlockText, text, srcImage, unlockAction, gameAction, unlocked) {
+    constructor(name, unlockText, text, srcImage, unlockAction, gameAction, pregameAction, unlocked) {
         this.name = name;
         this.unlockText = unlockText;
         this.text = text;
         this.srcImage = srcImage;
         this.unlockAction = unlockAction;
         this.gameAction = gameAction;
+        this.pregameAction = pregameAction;
         this.unlocked = unlocked;
     }
 }
@@ -81,45 +82,82 @@ var classes = [
         "classesImg/peasantImg.jpg", function(code) { return true; },
         function(code) {
             NormalGame(code, 0, 1.5, 0.5);    
-        }, true),
+        }, function() {}, true),
     new Class("Experienced", "Play a bit and earn experience", "A class that does not take any risks, and any is ANY, in fact, it keeps 50% if it loses, in exange it only wins 125% of the bet, and loses 100% on surrender",
         "classesImg/experiencedImg.jpg", function(code) { return (gamesWon + gamesLose) >= 10; }, 
         function(code) {
             NormalGame(code, 0.5, 1.25, 0);
-        }, false),
+        }, function() {},false),
     new Class("Cheater", "Get a 6 when its a 6", "This class knows a way to cheat, so you can win a 300% of what you bet, but there is a 10% chance you get caught and lose all your money, also you lose 100% of the bet and surrender win 50%",
         "classesImg/cheaterImg.jpg", function(code) { return card.value == 5 && nextCard.value == 5; },
         function(code) {
             NormalGame(code, 0, 3, 0.5);
 
             if(Math.random() <= 0.1 && code != 0) {
-                destroyDiv();
-
-                var h1 = document.createElement("h1");
-                h1.innerHTML = "You have been caught";
-                h1.style.color = "rgb(250, 100, 100)";
-
-                var button = document.createElement("button");
-                button.innerHTML = "Next";
-                button.onclick = function() { destroyDiv(); balance = 0; updateBalance(); };
-
-                var div = document.getElementById("objectivesNotification");
-                div.appendChild(h1);
-                div.appendChild(button);
-
-                div.style.backgroundColor = "rgb(255, 10, 10)";
-                div.style.display = "block";
+                notify("You have been caught", "rgb(250, 100, 100)", "", "", "", "rgb(255, 10, 10)", function() { destroyDiv(); balance = 0; updateBalance(); });
             }
-        }, false),
+        }, function() {}, false),
     new Class("Mage", "This class likes risky situations", "Have magic powers and a 25% of the time predicts the next card, wins with 150% of the bet and loses all, surrenders with 50%",
         "classesImg/mageImg.jpg", function(code) { return (card.value == 0 && nextCard.value == 0 && code == -1) || (card.value == 12 && nextCard.value == 12 && code == 1); },
         function(code) {
             NormalGame(code, 0, 1.5, 0.5);
+        }, function() { 
+            notify("","","","", "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px", "I can predict this will be the next card", "rgb(100, 100, 100)", "");
         }, false),
     new Class("Inventor", "Loss is the key to learning", "This techy class is a really good inventor... of excuses, but can save you, with his 10% of probabilities of recover 100% of the bet on lose, in normal loses it loses with 0% of the bet, and wins 150%, but surrenders with 25%",
-        "inventorImg.jpg", function() { return gamesLose >= 20; },
+        "classesImg/inventorImg.jpg", function() { return gamesLose >= 20; },
         function(code) {
-            NormalGame(code, Math.random() <= 0.1 ? 1 : 0, 1.50, 0.25);
+            NormalGame(code, Math.random() <= 0.25 ? 1 : 0, 1.50, 0.25);
+        }, function() {}, false),
+    new Class("Programmer", "Lost in the code", "This programmer will modify the code so you ALWAYS win, but it has a 50% chance of deleting itself in the process, wins 150%, surrenders with 0%", 
+        "classesImg/programmerImg.jpg", function() { return (document.getElementById("programmerP").innerHTML != "Modify this for a free class") && !this.Locked; },
+        function(code) {
+            nextCard = card;
+            NormalGame(code, 0, 1.5, 0);
+
+            if(Math.random() < 0.5) {
+                notify("You lose Programmer", "rgb(200, 100, 100)", "", "", "", "", "rgb(255, 10, 10)", "");
+                
+                var div0 = document.getElementById("class" + this.name);
+                div0.className = "classLocked";
+                div0.onclick = function() { SetCurrentClass() };
+
+                SetCurrentClass("Peasant");
+
+                this.Locked = true;
+            }
+        }, function() {}, false),
+    new Class("Dealer", "Atracted by big amounts of money", "This class lets you choose between 2 cards before starting the game, wins with 175% ands loses with 0% of the bet, can surrender with 75%",
+        "cassesImg/dealerImg.jpg", function() {return ((high && nextCard.value >= card.value) || (!high && nextCard.value <= card.value)) && bet > 5000;},
+        function(code) {
+            NormalGame(code, 0, 1.75, 0.75);
+        }, function() {
+            var div = document.getElementById("objectivesNotification");
+
+            var card1 = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4));
+            var card2 = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4));
+
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "Select your card";
+
+            var img1 = document.createElement("img");
+            img1.style.width = "27px";
+            img1.style.height = "36px";
+            img1.style.background = "url(cards.jpg) " + (card1.value * -27) + "px " + (card1.suit * -36) + "px";
+            img1.onclick = function() { card = card1; destroyDiv(); document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";};
+
+            var img2 = document.createElement("img");
+            img2.style.width = "27px";
+            img2.style.height = "36px";
+            img2.style.background = "url(cards.jpg) " + (card2.value * -27) + "px " + (card2.suit * -36) + "px";
+            img2.onclick = function() { card = card2; destroyDiv(); div.style.display = "none"; document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";};
+        
+            div.appendChild(h1);
+            div.appendChild(img1);
+            div.appendChild(img2);
+
+            div.style.background = "rgb(200, 200, 100)";
+            div.style.display = "block";
         }, false),
 ];
 
@@ -177,14 +215,11 @@ function Game() {
 
     card = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4));
     do { nextCard = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4)); }while(nextCard.equals(card));
+
+    currClass.pregameAction();
+
     document.getElementById("resultDiv").style.display = "none";
     document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";
-
-    if(currClass.name == "Mage" && Math.random() <= 0.25) {
-        document.getElementById("resultDiv").style.display = "block";
-        document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px";
-        document.getElementById("resultText").innerHTML = "";
-    }
 
     gameInProcess = true;
 }
@@ -197,8 +232,10 @@ function Result(code) {
     
     document.getElementById("resultDiv").style.display = "block";
     if(code != 0) document.getElementById("resultImg").style.background = "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px";
-   
-    currClass.gameAction(code);
+
+    for(var i = 0; i < classes.length; i++) {
+        if(!classes[i].unlocked && classes[i].unlockAction(code)) unlock(classes[i]);
+    }
 
     bet = 0;
 
@@ -207,10 +244,6 @@ function Result(code) {
     document.getElementById("gamesPlayed").innerHTML = gamesLose + gamesWon;
     document.getElementById("gamesWon").innerHTML = gamesWon;
     document.getElementById("gamesLose").innerHTML = gamesLose;
-
-    for(var i = 0; i < classes.length; i++) {
-        if(!classes[i].unlocked && classes[i].unlockAction(code)) unlock(classes[i]);
-    }
 
     gameInProcess = false;
 }
@@ -320,6 +353,11 @@ function LoadClasses() {
 }
 
 function SetCurrentClass(newClassName) {
+    if(gameInProcess) {
+        alert("Cannot change class while in game");
+        return;
+    }
+
     var lastClass = currClass;
     currClass = classes[classes.findIndex(function(c) { return c.name == newClassName; })];
     document.getElementById("class" + currClass.name).className = "currClass";
@@ -335,7 +373,7 @@ function unlock(toUnlock) {
 
     destroyDiv();
 
-    notify("New class unlocked!", "rgb(200, 255, 200)", toUnlock.name, toUnlock.srcImage, toUnlock.text + "<br/>Select it from the class menu", "rgb(10, 255, 10)");
+    notify("New class unlocked!", "rgb(200, 255, 200)", toUnlock.name, toUnlock.srcImage, "", toUnlock.text + "<br/>Select it from the class menu", "rgb(10, 255, 10)", "");
 
     var div0 = document.getElementById("class" + toUnlock.name);
     div0.className = "classUnlocked";
@@ -371,7 +409,7 @@ function NormalGame(code, losePercent, winPercent, surrenderPercent) {
     bet = 0;
 }
 
-function notify(title, titleColor, subtitle, imgSource, text, backgroundColor, specialButtonEffect) {
+function notify(title, titleColor, subtitle, imgSource, imgBackground, text, backgroundColor, specialButtonEffect) {
 
     destroyDiv();
     
@@ -389,6 +427,15 @@ function notify(title, titleColor, subtitle, imgSource, text, backgroundColor, s
     if(imgSource != "") {
         var img = document.createElement("img");
         img.src = imgSource;
+    }
+
+    if(imgBackground != "") {
+        if(!(img)) {
+            var img = document.createElement("img");
+        }
+        img.style.background = imgBackground;
+        img.style.width = "27px";
+        img.style.height = "36px";
     }
 
     if(text != "") {
