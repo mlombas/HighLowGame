@@ -6,6 +6,8 @@ var balance;
 var bet = 0;
 var card, nextCard;
 
+var notifyOn = false;
+
 var currClass;
 
 var gameInProcess = false;
@@ -94,7 +96,7 @@ var classes = [
             NormalGame(code, 0, 3, 0.5);
 
             if(Math.random() <= 0.1 && code != 0) {
-                while(!notify("You have been caught", "rgb(250, 100, 100)", "", "", "", "rgb(255, 10, 10)", function() { destroyDiv(); balance = 0; updateBalance(); }));
+                notify("You have been caught", "rgb(250, 100, 100)", "", "", "", "rgb(255, 10, 10)", function() { destroyDiv(); balance = 0; updateBalance(); });
             }
         }, function() {}, false),
     new Class("Mage", "This class does not likes risky situations", "Have magic powers and a 25% of the time predicts the next card, wins with 150% of the bet and loses all, surrenders with 50%",
@@ -102,7 +104,7 @@ var classes = [
         function(code) {
             NormalGame(code, 0, 1.5, 0.5);
         }, function() { 
-            if(Math.random() < 0.25) while(!notify("","","","", "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px", "I can predict this will be the next card", "rgb(100, 100, 100)", ""));
+            if(Math.random() < 0.25) notify("","","","", "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px", "I can predict this will be the next card", "rgb(100, 100, 100)", "");
         }, false),
     new Class("Inventor", "Loss is the key to learning", "This techy class is a really good inventor... of excuses, but can save you, with his 10% of probabilities of recover 100% of the bet on lose, in normal loses it loses with 0% of the bet, and wins 150%, but surrenders with 25%",
         "classesImg/inventorImg.jpg", function() { return gamesLose >= 20; },
@@ -115,7 +117,7 @@ var classes = [
             NormalGame(code, 0, 1.5, 0);
 
             if(Math.random() < 0.5) {
-                while(!notify("You lose Programmer", "rgb(200, 100, 100)", "", "", "", "", "rgb(255, 10, 10)", ""));
+                notify("You lose Programmer", "rgb(200, 100, 100)", "", "", "", "", "rgb(255, 10, 10)", "");
                 
                 var div0 = document.getElementById("class" + this.name);
                 div0.style.display = "none";
@@ -178,6 +180,10 @@ function Start(){
 }
 
 function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"
+
+notify("hey");
+notify("what");
+
     if(gameInProcess) {
         alert("Cannot bet while in game");
         return;
@@ -302,8 +308,8 @@ function notifObj() {
 
         var objective = objectivesNotif.shift();
 
-        while(!notify(objective.done ? "Archievement unlocked!" : "Archievement lost...", objective.done ? "rgb(180, 255, 180)" : "rgb(255, 180, 180)",
-             objective.name,"", "", "$" + objective.limit + "<br/>" + objective.text, objective.done ? "rgb(200, 200, 100)" : "rgb(200, 100, 200)", objectivesNotif.length > 0 ? notifObj : destroyDiv));
+        notify(objective.done ? "Archievement unlocked!" : "Archievement lost...", objective.done ? "rgb(180, 255, 180)" : "rgb(255, 180, 180)",
+             objective.name,"", "", "$" + objective.limit + "<br/>" + objective.text, objective.done ? "rgb(200, 200, 100)" : "rgb(200, 100, 200)", objectivesNotif.length > 0 ? notifObj : destroyDiv);
 
         document.getElementById("objective" + objective.name).style.textDecoration = objective.done ? "line-through" : "none";
         document.getElementById("objective" + objective.name).style.backgroundColor = objective.done ? "rgb(180, 250, 180)" : "rgb(255, 255, 255)";
@@ -384,7 +390,7 @@ function unlock(toUnlock) {
 
     destroyDiv();
 
-    while(!notify("New class unlocked!", "rgb(200, 255, 200)", toUnlock.name, toUnlock.srcImage, "", toUnlock.text + "<br/>Select it from the class menu", "rgb(10, 255, 10)", ""));
+    notify("New class unlocked!", "rgb(200, 255, 200)", toUnlock.name, toUnlock.srcImage, "", toUnlock.text + "<br/>Select it from the class menu", "rgb(10, 255, 10)", "");
 
     var div0 = document.getElementById("class" + toUnlock.name);
     div0.className = "classUnlocked";
@@ -421,8 +427,12 @@ function NormalGame(code, losePercent, winPercent, surrenderPercent) {
 }
 
 function notify(title, titleColor, subtitle, imgSource, imgBackground, text, backgroundColor, specialButtonEffect) {
+    if(notifyOn) { 
+        setTimeout(function() { notify(title, titleColor, subtitle, imgSource, imgBackground, text, backgroundColor, specialButtonEffect); }, 1000); 
+        return;
+     }
 
-    if(document.getElementById("objectivesNotification").style.display != "block") return false;
+    notifyOn = true;
 
     destroyDiv();
     
@@ -432,17 +442,17 @@ function notify(title, titleColor, subtitle, imgSource, imgBackground, text, bac
         h1.style.color = titleColor;
     }
 
-    if(subtitle != "") {
+    if(subtitle != "" && specialButtonEffect !== undefined) {
         var h2 = document.createElement("h2");
         h2.innerHTML = subtitle;
     }
 
-    if(imgSource != "") {
+    if(imgSource != "" && imgSource !== undefined) {
         var img = document.createElement("img");
         img.src = imgSource;
     }
 
-    if(imgBackground != "") {
+    if(imgBackground != "" && imgBackground !== undefined) {
         if(!(img)) {
             var img = document.createElement("img");
         }
@@ -451,7 +461,7 @@ function notify(title, titleColor, subtitle, imgSource, imgBackground, text, bac
         img.style.height = "36px";
     }
 
-    if(text != "") {
+    if(text != "" && text !== undefined) {
         var p = document.createElement("p");
         p.innerHTML = text;
         p.className = "infoParagraph";
@@ -459,7 +469,7 @@ function notify(title, titleColor, subtitle, imgSource, imgBackground, text, bac
 
     var button = document.createElement("button");
     button.innerHTML = "Next";
-    button.onclick = specialButtonEffect != "" ? specialButtonEffect : destroyDiv;
+    button.onclick = function() { notifyOn = false; (specialButtonEffect != "" && specialButtonEffect !== undefined) ? specialButtonEffect() : destroyDiv(); };
 
     var div = document.getElementById("objectivesNotification");
     if(h1) div.appendChild(h1);
@@ -470,6 +480,4 @@ function notify(title, titleColor, subtitle, imgSource, imgBackground, text, bac
 
     div.style.backgroundColor = backgroundColor;
     div.style.display = "block";
-
-    return true;
 }
