@@ -99,10 +99,10 @@ var classes = [
                 notify("You have been caught", "rgb(250, 100, 100)", "", "", "", "rgb(255, 10, 10)", function() { destroyDiv(); balance = 0; updateBalance(); });
             }
         }, function() {}, false),
-    new Class("Mage", "This class does not likes risky situations", "Have magic powers and a 25% of the time predicts the next card, wins with 150% of the bet and loses all, surrenders with 50%",
+    new Class("Mage", "This class does not likes risky situations", "Have magic powers and a 25% of the time predicts the next card, wins with 125% of the bet and loses all, surrenders with 50%",
         "classesImg/mageImg.jpg", function(code) { return (card.value == 0 && nextCard.value == 0 && code == -1) || (card.value == 12 && nextCard.value == 12 && code == 1); },
         function(code) {
-            NormalGame(code, 0, 1.5, 0.5);
+            NormalGame(code, 0, 1.25, 0.5);
         }, function() { 
             if(Math.random() < 0.25) notify("","","","", "url(cards.jpg)" + (-349 / 13 * nextCard.value) + "px " + (-36 * nextCard.suit) + "px", "I can predict this will be the next card", "rgb(100, 100, 100)", "");
         }, false),
@@ -159,10 +159,10 @@ var classes = [
             div.style.background = "rgb(200, 200, 100)";
             div.style.display = "block";
         }, false),
-    new Class("Blind", "Does not see where it is", "is blind, you cant see the card until results, but it will always be an ace or a king, wins 150%, loses 100%, and surrenders with 100%",
+    new Class("Blind", "Does not see where it is", "is blind, you cant see the card until results, but it will always be an ace or a king, wins 200%, loses 100%, and surrenders with 100%",
         "classesImg/blindImg.jpg", function() { return Math.random() < 0.01; }, 
         function(code) {
-            NormalGame(code, 0, 1.5, 1);
+            NormalGame(code, 0, 2, 1);
         }, 
         function() {
             card.value = (Math.random() > 0.5) ? 0 : 12;
@@ -180,10 +180,6 @@ function Start(){
 }
 
 function Bet(n){ //In this function, n == -1 means "Use the value from he field" and n== -2 means "bet all"
-
-notify("hey");
-notify("what");
-
     if(gameInProcess) {
         alert("Cannot bet while in game");
         return;
