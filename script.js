@@ -128,7 +128,7 @@ var classes = [
             }
         }, function() {}, false),
     new Class("Dealer", "Atracted by big amounts of money", "This class lets you choose between 2 cards before starting the game, wins with 175% ands loses with 0% of the bet, can surrender with 75%",
-        "cassesImg/dealerImg.jpg", function() {return ((high && nextCard.value >= card.value) || (!high && nextCard.value <= card.value)) && bet > 5000;},
+        "classesImg/dealerClass.jpg", function() {return bet > 5000;},
         function(code) {
             NormalGame(code, 0, 1.75, 0.75);
         }, function() {
@@ -158,6 +158,15 @@ var classes = [
 
             div.style.background = "rgb(200, 200, 100)";
             div.style.display = "block";
+        }, false),
+    new Class("Blind", "He likes probabilities", "is blind, you cant see the card until results, but it will always be an ace or a king, wins 150%, loses 100%, and surrenders with 100%",
+        "classesImg/blindClass.jpg", function() { return Math.random() < 0.01; }, 
+        function(code) {
+            NormalGame(code, 0, 1.5, 1);
+        }, 
+        function() {
+            card.value = (Math.random() > 0.5) ? 0 : 12;
+            document.getElementById("cardImg").style.background = "";
         }, false),
 ];
 
@@ -216,10 +225,10 @@ function Game() {
     card = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4));
     do { nextCard = new Card(Math.floor(Math.random() * 13), Math.floor(Math.random() * 4)); }while(nextCard.equals(card));
 
-    currClass.pregameAction();
-
     document.getElementById("resultDiv").style.display = "none";
     document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";
+
+    currClass.pregameAction();
 
     gameInProcess = true;
 }
@@ -236,6 +245,8 @@ function Result(code) {
     for(var i = 0; i < classes.length; i++) {
         if(!classes[i].unlocked && classes[i].unlockAction(code)) unlock(classes[i]);
     }
+
+    currClass.gameAction(code);
 
     bet = 0;
 
@@ -394,14 +405,14 @@ function NormalGame(code, losePercent, winPercent, surrenderPercent) {
         document.getElementById("resultText").innerHTML = "You win!";
         document.getElementById("resultText").style.color = "rgb(100,255,100)"; 
 
-        balance += bet * winPercent;    
+        balance += (bet * winPercent);    
 
         gamesWon++;
     } else { 
         document.getElementById("resultText").innerHTML = "You lose...";
         document.getElementById("resultText").style.color = "rgb(255,100,100)";
 
-        balance += bet * losePercent;
+        balance += (bet * losePercent);
 
         gamesLose++;
     }
