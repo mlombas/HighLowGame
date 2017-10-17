@@ -168,6 +168,38 @@ var classes = [
             card.value = (Math.random() > 0.5) ? 0 : 12;
             document.getElementById("cardImg").style.background = "";
         }, false),
+    new Class("Inversed", "desrevnI", "This class is the default one inversed, nothing else changes", 
+        "classesImg/inversedImg.jpg", function() { return gamesWon > 50; }, function(code) {NormalGame(code, 1.5, 0, 0.5);}, function() {}, false),
+    new Class("Enraged", "does not like to lose", "This class HATES to lose and will not lose more than 10% of the balance it has, otherwise loses 100%, wins 160%, and surrenders with 90%",
+        "classesImg/enragedImg.jpg", function() {
+            if(!(this.objectivesLast)) this.objectivesLast = 0;
+
+            var objectivesCount = objectives.map(function(obj) { return obj.done; }).length;
+
+            var result = (this.objectivesLast - 2 > objectivesCount);
+            this.objectivesLast = objectivesCount;
+
+            return result;
+        }, function(code) {
+            if(((card.value < nextCard.value && code == -1) || (card.value > nextCard.value && code == 1)) && bet > (balance * 0.1)) bet = balance * 0.1;
+            
+            NormalGame(code, 1, 1.6, 0.9);
+        }, function() {}, false),
+    new Class("Lucky", "Lucky guy", "Is so lucky the entire universe conspires so he will have a 50% more posibilities of win, wins 150%, soles 100%, and surrenders with 50%",
+        "classesImg/luckyImg.jpg", function(code) { 
+            if(!(this.wonCount)) this.wonCount = 0;
+
+            if((card.value <= nextCard.value && code == 1) || (card.value >= nextCard.value && code == -1)) this.wonCount++; else this.wonCount = 0;
+
+            return this.wonCount > 15;
+        }, function(code) {
+            if(Math.random() < 0.5) {
+                if(code == 1) nextCard.value = card.value + Math.floor(Math.random() * (13 - card.value));
+                else if(code == -1) nextCard.value = card.value - Math.floor(Math.random() * 13);
+            }
+
+            NormalGame(code, 0, 1.5, 0.5);
+        }, function() {}, false),
 ];
 
 function Start(){
@@ -353,7 +385,7 @@ function LoadClasses() {
         p.innerHTML = classes[i].unlockText;
 
         var div = document.getElementById("classDiv");
-        div.innerHTML += "<div class=" + (classes[i].unlocked ? "classUnlocked" : "classLocked") + " id=class" + classes[i].name + (classes[i].unlocked ? " onclick=SetCurrentClass('" + classes[i].name + ", forced')" : "") + "></div>";
+        div.innerHTML += "<div class=" + (classes[i].unlocked ? "classUnlocked" : "classLocked") + " id=class" + classes[i].name + (classes[i].unlocked ? (" onclick=SetCurrentClass('" + classes[i].name + "')") : "") + "></div>";
 
         var div0 = document.getElementById("class" + classes[i].name);
 
