@@ -194,12 +194,49 @@ var classes = [
             return this.wonCount > 15;
         }, function(code) {
             if(Math.random() < 0.5) {
+                console.log("lucky");
                 if(code == 1) nextCard.value = card.value + Math.floor(Math.random() * (13 - card.value));
                 else if(code == -1) nextCard.value = card.value - Math.floor(Math.random() * 13);
             }
 
             NormalGame(code, 0, 1.5, 0.5);
         }, function() {}, false),
+    new Class("Smoker", "He just loves smoke", "This class can use its smoke so a 10% of the times you can choose whatever card you want, wins 150%, loses 90%, surrenders with 60%",
+         "classesImg/smokerImg.jpg", function(code) {
+            if(!(this.lastDealerCard)) this.lastDealerCard = new Card(-1, -1);
+            
+            if(currClass.name = "Dealer") { console.log(this.lastDealerCard); if(card.equals(this.lastDealerCard)) return true; else this.lastDealerCard = card; }
+
+            return false;
+         }, function(code) { NormalGame(code, 0.1, 1.5, 0.6); }, function() {
+            if(Math.random() > 0.1) return;
+
+            var div = document.getElementById("objectivesNotification");
+
+            var h1 = document.createElement("h1");
+            h1.innerHTML = "Smoke barrier!";
+
+            div.appendChild(h1);
+
+            var cards = [];
+
+            for(var i = 0; i < 4; i++) for(var j = 0; j < 13; j++) {
+                var img = document.createElement("img");
+                img.card = new Card(j, i);
+                img.style.width = "27px";
+                img.style.height = "36px";
+                img.style.background = "url(cards.jpg) " + (j * -27) + "px " + (i * -36) + "px";
+                img.onclick = function() { SmokeEffect(true); card = this.card; destroyDiv(); document.getElementById("cardImg").style.background = "url(cards.jpg)" + (-349 / 13 * card.value) + "px " + (-36 * card.suit) + "px";};
+            
+                div.appendChild(img);
+            } 
+
+            SmokeEffect(false);
+
+            div.style.background = "rgb(50, 50, 50)";
+            div.style.display = "block";
+        }, false),
+
 ];
 
 function Start(){
@@ -508,4 +545,47 @@ function notify(title, titleColor, subtitle, imgSource, imgBackground, text, bac
 
     div.style.backgroundColor = backgroundColor;
     div.style.display = "block";
+}
+
+function SmokeEffect(retrieve) {
+    if(retrieve) {
+        var percentaje = 100;
+
+        var id = setInterval(function() { 
+            var divs = document.getElementsByClassName("smokeDiv");
+
+            for(var i = 0; i < divs.length; i++) {
+                divs[i].style.width = percentaje + "%";
+                divs[i].style.height = percentaje + "%"
+            }
+
+            if(--percentaje < 0) { 
+                for(var i = 0; i < divs.length; i++) document.body.removeChild(divs[i]);W
+                clearInterval(id);
+            }
+         }, 16);
+    } else {
+        var percentaje = 0;
+
+        var max = Math.round(100 + Math.random() * 1000);
+        for(var i = 0; i < max; i++) {
+            var div = document.createElement("div");
+            div.className = "smokeDiv";
+            div.style.top = Math.random() * 100 - 10 + "%";
+            div.style.left = Math.random() * 100  - 10 + "%";
+
+            document.body.appendChild(div);
+        }
+
+        var id = setInterval(function() { 
+            var divs = document.getElementsByClassName("smokeDiv");
+
+            for(var i = 0; i < divs.length; i++) {
+                divs[i].style.width = percentaje + "%";
+                divs[i].style.height = percentaje + "%"
+            }
+
+            if((percentaje += 0.5) > 100) clearInterval(id);
+         }, 16);
+    }
 }
